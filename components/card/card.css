@@ -1,8 +1,15 @@
 .card-container {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(min(var(--card-width), 100%), 1fr)
+  );
   margin-bottom: 10px;
+  gap: 1rem;
+  justify-items: center;
 }
 .card {
-  width: 300px;
+  width: var(--card-width);
   background-color: var(--color-secondary);
 }
 
