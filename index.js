@@ -1,14 +1,49 @@
 import { createCharacterCard } from "./components/card/card.js";
+import { createButton } from "./components/nav-button/nav-button.js";
+import { createPagination } from "./components/nav-pagination/nav-pagination.js";
+import { createSearchBar } from "./components/search-bar/search-bar.js";
 
 const cardContainer = document.querySelector('[data-js="card-container"]');
 const searchBarContainer = document.querySelector(
   '[data-js="search-bar-container"]'
 );
-const searchBar = document.querySelector('[data-js="search-bar"]');
 const navigation = document.querySelector('[data-js="navigation"]');
-const prevButton = document.querySelector('[data-js="button-prev"]');
-const nextButton = document.querySelector('[data-js="button-next"]');
-const pagination = document.querySelector('[data-js="pagination"]');
+
+function onSearchBarSubmit(event) {
+  event.preventDefault();
+
+  const formData = new FormData(event.target);
+  const data = Object.fromEntries(formData);
+  searchQuery = data.query;
+  page = 1;
+
+  fetchCharacters();
+}
+
+function onNextClick() {
+  if (page < maxPage) {
+    page++;
+    fetchCharacters();
+  }
+}
+
+function onPrevClick() {
+  if (page > 1) {
+    page--;
+    fetchCharacters();
+  }
+}
+
+const searchBar = createSearchBar(onSearchBarSubmit);
+searchBarContainer.append(searchBar);
+
+const pagination = createPagination();
+const prevButton = createButton("prev", onPrevClick);
+const nextButton = createButton("next", onNextClick);
+
+navigation.append(prevButton);
+navigation.append(pagination);
+navigation.append(nextButton);
 
 // States
 let maxPage = 1;
@@ -45,34 +80,5 @@ function createCards(allCards) {
       cardContainer.append(createCharacterCard(card));
     });
 }
-
-function onNextClick() {
-  if (page < maxPage) {
-    page++;
-    fetchCharacters();
-  }
-}
-
-function onPrevClick() {
-  if (page > 1) {
-    page--;
-    fetchCharacters();
-  }
-}
-
-function onSearchBarSubmit(event) {
-  event.preventDefault();
-
-  const formData = new FormData(event.target);
-  const data = Object.fromEntries(formData);
-  searchQuery = data.query;
-  page = 1;
-
-  fetchCharacters();
-}
-
-prevButton.addEventListener("click", onPrevClick);
-nextButton.addEventListener("click", onNextClick);
-searchBar.addEventListener("submit", onSearchBarSubmit);
 
 fetchCharacters();
