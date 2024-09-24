@@ -9,6 +9,22 @@ const searchBarContainer = document.querySelector(
 );
 const navigation = document.querySelector('[data-js="navigation"]');
 
+const searchBar = createSearchBar(onSearchBarSubmit);
+searchBarContainer.append(searchBar);
+
+const pagination = createPagination();
+const prevButton = createButton("prev", onPrevClick);
+const nextButton = createButton("next", onNextClick);
+
+navigation.append(prevButton);
+navigation.append(pagination);
+navigation.append(nextButton);
+
+// States
+let maxPage = 1;
+let page = 1;
+let searchQuery = "";
+
 function onSearchBarSubmit(event) {
   event.preventDefault();
 
@@ -34,21 +50,16 @@ function onPrevClick() {
   }
 }
 
-const searchBar = createSearchBar(onSearchBarSubmit);
-searchBarContainer.append(searchBar);
+function updatePagination() {
+  pagination.textContent = `${page} / ${maxPage}`;
+}
 
-const pagination = createPagination();
-const prevButton = createButton("prev", onPrevClick);
-const nextButton = createButton("next", onNextClick);
-
-navigation.append(prevButton);
-navigation.append(pagination);
-navigation.append(nextButton);
-
-// States
-let maxPage = 1;
-let page = 1;
-let searchQuery = "";
+function createCards(allCards) {
+  allCards &&
+    allCards.forEach((card) => {
+      cardContainer.append(createCharacterCard(card));
+    });
+}
 
 async function fetchCharacters() {
   cardContainer.innerHTML = "";
@@ -69,16 +80,6 @@ async function fetchCharacters() {
   } catch (error) {
     console.log("Error occured when fetching all characters", error);
   }
-}
-
-function updatePagination() {
-  pagination.textContent = `${page} / ${maxPage}`;
-}
-function createCards(allCards) {
-  allCards &&
-    allCards.forEach((card) => {
-      cardContainer.append(createCharacterCard(card));
-    });
 }
 
 fetchCharacters();
